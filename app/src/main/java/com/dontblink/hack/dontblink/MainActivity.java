@@ -25,15 +25,6 @@ import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
-import com.google.android.glass.eye.EyeGesture;
-import com.google.android.glass.eye.EyeGestureManager;
-import com.google.android.glass.eye.EyeGestureManager.Listener;
-
-import java.net.URISyntaxException;
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
-
 
 public class MainActivity extends Activity implements SensorEventListener{
 
@@ -51,12 +42,11 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     public TextView timerView;
 
-    private TextView timerLabel;
-
     // Timer variables
     private Handler mHandler;
     private int timeToStart = 5;
     private boolean gameStarted = false;
+    private int random;
 
     private long currentTime = System.currentTimeMillis();
 
@@ -65,14 +55,14 @@ public class MainActivity extends Activity implements SensorEventListener{
     private float accz;
     private boolean hasJumped = false;
 
-    private String[] commands = {"WAIT", "JUMP", "THE GOVERNMENT IS LIZARDS"};
+    private String[] commands = {"WAIT", "JUMP", "BUSH DID 9/11"};
 
 
     private Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
             try {
-                //if (timeToStart == -1) return;
+                if (timeToStart == -1) return;
                 timerView = (TextView)findViewById(R.id.timer_label);
                 timerView.setText(String.valueOf(timeToStart));
                 timeToStart--;
@@ -87,7 +77,9 @@ public class MainActivity extends Activity implements SensorEventListener{
                                 finish();
                             }
                         }
-                        timerView.setText(commands[(int) Math.random() * 2]);
+                        random =  (int) (Math.random() * 2);
+                        timerView.setText(commands[random]);
+                        Log.i(TAG, String.valueOf(random) );
 
                     }
 
@@ -105,10 +97,10 @@ public class MainActivity extends Activity implements SensorEventListener{
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         mHandler = new Handler();
-        setContentView(R.layout.lobby);
+        setContentView(R.layout.timer);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        //mSensorManager.registerListener(this, mAcc, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAcc, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -120,7 +112,7 @@ public class MainActivity extends Activity implements SensorEventListener{
     @Override
     protected void onStart() {
         super.onStart();
-        //startTimer();
+        startTimer();
     }
 
     @Override
@@ -158,29 +150,12 @@ public class MainActivity extends Activity implements SensorEventListener{
             //Log.v(TAG, "y = " + accy);
             //Log.v(TAG, "z = " + accz);
             if (accy > 17 && timerView.getText().toString().equals("JUMP")) {
-                Log.v(TAG, "JUMPED");
+                Log.i(TAG, "JUMPED");
                 hasJumped = true;
             }
         }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (gameStarted) {
-                    Log.i(TAG, "y: " + accy);
-                    timerView.setBackgroundColor(0xfff00000);
-                    timerView.setText(String.valueOf(accy));
-                    /*(new Handler()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setContentView(R.layout.lobby);
-                            mSocket.disconnect();
-                            mSocket.connect();
-                        }
-                    }, 1000); */
 
-                }
-            }
-        });
+
     }
 
 }
