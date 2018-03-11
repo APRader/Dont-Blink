@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Dont Blink</string>
-    <string name="title_activity_main">Don\'t Blink</string>
-    <string name="hello_world">Welcome to dont blink!</string>
+    <string name="app_name">Glasshopper</string>
+    <string name="title_activity_main">Glasshopper</string>
+    <string name="hello_world">Welcome to Glass hopper!</string>
     <string name="you_lost">YOU LOST</string>
-    <string name="glass_voice_trigger">play dont blink</string>
+    <string name="glass_voice_trigger">play glass hopper</string>
     <string name="socket_server">http://172.20.185.50:3000/</string>
     <string name="timer_label">5</string>
 </resources>

@@ -25,6 +25,8 @@ import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends Activity implements SensorEventListener{
 
@@ -55,7 +57,7 @@ public class MainActivity extends Activity implements SensorEventListener{
     private float accz;
     private boolean hasJumped = false;
 
-    private String[] commands = {"WAIT", "JUMP", "BUSH DID 9/11"};
+    private String[] commands = {"WAIT", "JUMP", "TAP", "EARTH IS FLAT"};
 
 
     private Runnable mStatusChecker = new Runnable() {
@@ -63,21 +65,27 @@ public class MainActivity extends Activity implements SensorEventListener{
         public void run() {
             try {
                 if (timeToStart == -1) return;
-                timerView = (TextView)findViewById(R.id.timer_label);
-                timerView.setText(String.valueOf(timeToStart));
+                if (timeToStart > -1) {
+                    timerView = (TextView) findViewById(R.id.timer_label);
+                    timerView.setText(String.valueOf(timeToStart));
+                }
                 timeToStart--;
-                if (timeToStart == -1) {
+                if (timeToStart <= -1 ) {
+                    timeToStart = -2;
                     mHandler.removeCallbacks(mStatusChecker);
                     timerView.setTextSize(TypedValue.COMPLEX_UNIT_SP,70);
-                    if (System.currentTimeMillis() > currentTime + 5000) {
+                    if (System.currentTimeMillis() > currentTime + 1500) {
                         currentTime = System.currentTimeMillis();
                         if (timerView.getText().toString().equals("JUMP")){
                             if (!hasJumped) {
                                 timerView.setText("YOU LOSE");
-                                finish();
+                                Log.i(TAG, "DID NOT JUMP");
+                                timeToStart = -1;
+                                return; //System.exit(0);
                             }
                         }
-                        random =  (int) (Math.random() * 2);
+                        hasJumped = false;
+                        random =  (int) (Math.random() * 3);
                         timerView.setText(commands[random]);
                         Log.i(TAG, String.valueOf(random) );
 
@@ -147,7 +155,7 @@ public class MainActivity extends Activity implements SensorEventListener{
             accz = event.values[2];
             // Do something with this sensor value.
             //Log.v(TAG, "x = " + accx);
-            //Log.v(TAG, "y = " + accy);
+            Log.v(TAG, "y = " + accy);
             //Log.v(TAG, "z = " + accz);
             if (accy > 17 && timerView.getText().toString().equals("JUMP")) {
                 Log.i(TAG, "JUMPED");
