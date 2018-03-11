@@ -74,7 +74,8 @@ public class MainActivity extends Activity implements SensorEventListener{
                     timeToStart = -2;
                     mHandler.removeCallbacks(mStatusChecker);
                     timerView.setTextSize(TypedValue.COMPLEX_UNIT_SP,70);
-                    if (System.currentTimeMillis() > currentTime + 1500) {
+
+                    if (System.currentTimeMillis() > currentTime + 1400) {
                         currentTime = System.currentTimeMillis();
                         if (timerView.getText().toString().equals("JUMP")){
                             if (!hasJumped) {
